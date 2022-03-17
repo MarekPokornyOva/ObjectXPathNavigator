@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+		<Authors>Marek Pokorný</Authors>
+		<Company>MpSoft</Company>
+		<Product>ObjectXPathNavigator</Product>
+		<Description>ObjectXPathNavigator is XPathNavigator implementation over System.Object.</Description>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageProjectUrl>https://github.com/MarekPokornyOva/ObjectXPathNavigator</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/MarekPokornyOva/ObjectXPathNavigator</RepositoryUrl>
+		<PackageTags>XSLT</PackageTags>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<Version>1.0.0</Version>
+	</PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ObjectXPathNavigator.Abstractions\ObjectXPathNavigator.Abstractions.csproj" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
+
+</Project>
