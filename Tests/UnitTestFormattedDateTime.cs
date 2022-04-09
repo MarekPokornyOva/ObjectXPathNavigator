@@ -35,7 +35,7 @@ namespace Tests
 				new SimpleDto
 				{
 					Dt = dt
-				}, new ObjectXPathNavigatorSettings { ValueConverter = formatter, ValueExplorer = DefaultValueInspectorFactory.Instance }), new XmlTextWriter(new StringWriter(sb)));
+				}, new ObjectXPathNavigatorSettings { ValueFormatter = formatter, ValueInspector = DefaultValueInspectorFactory.Instance }), new XmlTextWriter(new StringWriter(sb)));
 
 			Assert.AreEqual(formatter.Format(dt), sb.ToString());
 		}

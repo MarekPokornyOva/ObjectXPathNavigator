@@ -17,8 +17,8 @@
 		public ValueInfo GetValueInfo(object value)
 		{
 			ValueInfo result = ValueInfo.Empty;
-			foreach (IValueInspector explorer in _inspectors)
-				result = result.Combine(explorer.GetValueInfo(value));
+			foreach (IValueInspector inspector in _inspectors)
+				result = result.Combine(inspector.GetValueInfo(value));
 			return result;
 		}
 	}

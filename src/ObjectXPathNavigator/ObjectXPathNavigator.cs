@@ -8,14 +8,14 @@ namespace System.Xml.XPath.Object
 	public sealed class ObjectXPathNavigator : XPathNavigator
 	{
 		readonly XmlNameTable _nameTable;
-		readonly IValueFormatter _valueConverter;
-		readonly IValueInspector _valueExplorer;
+		readonly IValueFormatter _valueFormatter;
+		readonly IValueInspector _valueInspector;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ObjectXPathNavigator"/> class.
 		/// </summary>
 		/// <param name="value">A value.</param>
-		public ObjectXPathNavigator(object value) : this(value, null)
+		public ObjectXPathNavigator(object value) : this(value, ObjectXPathNavigatorSettings.Default)
 		{ }
 
 		Node _node;
@@ -26,19 +26,22 @@ namespace System.Xml.XPath.Object
 		/// <param name="settings">A settings.</param>
 		public ObjectXPathNavigator(object value, ObjectXPathNavigatorSettings settings)
 		{
+			if (settings == null)
+				throw new ArgumentNullException(nameof(settings));
+
 			XmlNameTable nameTable = _nameTable = new NameTable();
 			_node = new Node(nameTable.Add(""), XPathNodeType.Root, 0, null, LazyValue.FromConstant(value));
 
-			_valueConverter = settings?.ValueConverter ?? SimpleValueFormatter.Instance;
-			_valueExplorer = settings?.ValueExplorer ?? DefaultValueInspectorFactory.Instance;
+			_valueFormatter = settings.ValueFormatter ?? ObjectXPathNavigatorSettings.Default.ValueFormatter;
+			_valueInspector = settings.ValueInspector ?? ObjectXPathNavigatorSettings.Default.ValueInspector;
 		}
 
 		ObjectXPathNavigator(ObjectXPathNavigator other)
 		{
 			_nameTable = other._nameTable;
 			_node = other._node;
-			_valueConverter = other._valueConverter;
-			_valueExplorer = other._valueExplorer;
+			_valueFormatter = other._valueFormatter;
+			_valueInspector = other._valueInspector;
 		}
 
 		///<inheritdoc/>
@@ -143,7 +146,11 @@ namespace System.Xml.XPath.Object
 		///<inheritdoc/>
 		public override string Prefix => "";
 		///<inheritdoc/>
-		public override string Value => _valueConverter.Format(_node.ValueProvider.Value);
+		public override string Value => _valueFormatter.Format(_node.ValueProvider.Value);
+		/// <summary>
+		/// Provides the real .NET object.
+		/// </summary>
+		public override object UnderlyingObject => _node.ValueProvider.Value;
 
 		Node[] GetChildren()
 		{
@@ -154,7 +161,7 @@ namespace System.Xml.XPath.Object
 					children = Array.Empty<Node>();
 				else
 				{
-					ValueInfo valueInfo = _valueExplorer.GetValueInfo(_node.ValueProvider.Value);
+					ValueInfo valueInfo = _valueInspector.GetValueInfo(_node.ValueProvider.Value);
 
 					int index;
 					IReadOnlyCollection<NodeInfo> childInfos = valueInfo.Children;
